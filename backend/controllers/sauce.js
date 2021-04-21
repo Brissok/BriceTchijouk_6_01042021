@@ -1,5 +1,6 @@
 const Sauce = require('../models/Sauce');
 const fs = require('fs');
+const User = require('../models/User');
 
 exports.createSauce = (req, res, next) => {
   console.log(req.body);
@@ -52,20 +53,41 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 exports.postLike = (req, res, next) => {
+  const userId = req.body.userId;
+  const like = req.body.like;
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
-      if (!sauce.likes) {
-        sauce.likes = 1;
+      if (like === 1) {
+        sauce.usersLiked.push(userId);
+        sauce.likes = sauce.usersLiked.length;
         sauce.save()
           .then(() => res.status(201).json({ message: 'Like ajouté !'}))
           .catch(error => res.status(400).json({ error }));
-      } else {
-        sauce.likes += 1;
+      } else if (like === -1) {
+        sauce.usersDisliked.push(userId);
+        sauce.dislikes = sauce.usersDisliked.length;
         sauce.save()
-          .then(() => res.status(201).json({ message: 'Like ajouté !'}))
+          .then(() => res.status(201).json({ message: 'Dislike ajouté !'}))
+          .catch(error => res.status(400).json({ error }));
+      } else if (like === 0) {
+        for(let i = 0; i < sauce.usersLiked.length; i++) {
+          if(sauce.usersLiked[i] === userId) {
+            sauce.usersLiked.splice(i, 1);
+            i--;
+          }
+        }
+        for(let i = 0; i < sauce.usersDisliked.length; i++) {
+          if(sauce.usersDisliked[i] === userId) {
+            sauce.usersDisliked.splice(i, 1);
+            i--;
+          }
+        }
+        sauce.likes = sauce.usersLiked.length;
+        sauce.dislikes = sauce.usersDisliked.length;
+        sauce.save()
+          .then(() => res.status(201).json({ message: 'Dislike ajouté !'}))
           .catch(error => res.status(400).json({ error }));
       }
-      console.log(sauce.userId);
     })
     .catch(error => res.status(404).json({ error }));
 };
