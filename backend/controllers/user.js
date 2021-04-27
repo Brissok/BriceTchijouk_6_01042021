@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 
 exports.signup = (req, res, next) => {
     //Check password between 8 to 15 characters which contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character.
-    var decimal = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
-    if(req.body.password.match(decimal)) {
+    var regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+    if(req.body.password.match(regex)) {
         bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new User({
@@ -19,7 +19,7 @@ exports.signup = (req, res, next) => {
         .catch(error => res.status(500).json({ error }));
     } else {
         console.log('Wrong...!');
-        res.status(404).json({ error: 'Le mot de passe est incorrect !' })
+        res.status(404).json({ error: 'Le mot de passe est incorrect !' });
         return false;
     }
 

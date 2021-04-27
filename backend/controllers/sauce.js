@@ -3,17 +3,27 @@ const fs = require('fs');
 const User = require('../models/User');
 
 exports.createSauce = (req, res, next) => {
-  console.log(req.body);
+  var regex = /[A-Za-z0-9](([\-|\s|\\']?[a-zA-Z0-9]+)*)/;
   const sauceObject = JSON.parse(req.body.sauce);
   delete sauceObject._id;
-  const sauce = new Sauce({
-    ...sauceObject,
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-  });
-  console.log(sauce);
-  sauce.save()
-    .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
-    .catch(error => res.status(400).json({ error }));
+  if(sauceObject.name.match(regex) && 
+    sauceObject.manufacturer.match(regex) && 
+    sauceObject.description.match(regex) && 
+    sauceObject.mainPepper.match(regex)) {
+      const sauce = new Sauce({
+        ...sauceObject,
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      });
+      sauce.likes = 0;
+      sauce.dislikes = 0;
+      sauce.save()
+        .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
+        .catch(error => res.status(400).json({ error }));
+  } else {
+    console.log('Wrong...!');
+    res.status(400).json({ error: 'Incorrect !' });
+  }
+
 };
 
 exports.getAllSauces = (req, res, next) => {
@@ -29,14 +39,23 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
+  var regex = /[A-Za-z0-9](([\-|\s|\\']?[a-zA-Z0-9]+)*)/;
   const sauceObject = req.file ?
-    {
-      ...JSON.parse(req.body.sauce),
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    } : { ...req.body };
-  Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-      .then(() => res.status(200).json({ message: 'Sauce modifiée !'}))
-      .catch(error => res.status(400).json({ error }));
+  {
+    ...JSON.parse(req.body.sauce),
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  } : { ...req.body };
+  if(sauceObject.name.match(regex) && 
+    sauceObject.manufacturer.match(regex) && 
+    sauceObject.description.match(regex) && 
+    sauceObject.mainPepper.match(regex)) {
+        Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+            .then(() => res.status(200).json({ message: 'Sauce modifiée !'}))
+            .catch(error => res.status(400).json({ error }));
+    } else {
+      console.log('Wrong...!');
+      res.status(400).json({ error: 'Incorrect !' });
+    }
 };
 
 exports.deleteSauce = (req, res, next) => {
