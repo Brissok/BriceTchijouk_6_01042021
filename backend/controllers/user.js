@@ -20,7 +20,6 @@ exports.signup = (req, res, next) => {
     } else {
         console.log('Wrong...!');
         res.status(404).json({ error: 'Le mot de passe est incorrect !' });
-        return false;
     }
 
 };
