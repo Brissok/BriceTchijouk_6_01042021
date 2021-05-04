@@ -20,7 +20,6 @@ exports.createSauce = (req, res, next) => {
         .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
         .catch(error => res.status(400).json({ error }));
   } else {
-    console.log('Wrong...!');
     res.status(400).json({ error: 'Incorrect !' });
   }
 

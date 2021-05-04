@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 exports.signup = (req, res, next) => {
-    //Check password between 8 to 15 characters which contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character.
     var regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
     if(req.body.password.match(regex)) {
         bcrypt.hash(req.body.password, 10)
@@ -18,8 +17,7 @@ exports.signup = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }));
     } else {
-        console.log('Wrong...!');
-        res.status(404).json({ error: 'Le mot de passe est incorrect !' });
+        res.status(404).json({ message: 'Le mot de passe doit contenir entre 8 et 15 caractères avec au moins un chiffre, une majuscule, une minuscule et un caractère spécial !' });
     }
 
 };
@@ -28,12 +26,12 @@ exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
         .then(user => {
             if (!user) {
-                return res.status(401).json({ error: 'Utilisateur non trouvé !' });
+                return res.status(401).json({ message: 'Utilisateur non trouvé !' });
             }
             bcrypt.compare(req.body.password, user.password)
                 .then(valid => {
                     if (!valid) {
-                        return res.status(401).json({ error: 'Mot de passe incorrect !' });
+                        return res.status(401).json({ message: 'Mot de passe incorrect !' });
                     }
                     res.status(200).json({
                         userId: user._id,
