@@ -3,13 +3,13 @@ const fs = require('fs');
 const User = require('../models/User');
 
 exports.createSauce = (req, res, next) => {
-  var regex = /[A-Za-z0-9](([\-|\s|\\']?[a-zA-Z0-9]+)*)/;
+  var regex = /^[^<>@&"()!_$*€£`+=\/;?#]+$/;
   const sauceObject = JSON.parse(req.body.sauce);
   delete sauceObject._id;
   if(sauceObject.name.match(regex) && 
-    sauceObject.manufacturer.match(regex) && 
-    sauceObject.description.match(regex) && 
-    sauceObject.mainPepper.match(regex)) {
+  sauceObject.manufacturer.match(regex) && 
+  sauceObject.description.match(regex) && 
+  sauceObject.mainPepper.match(regex)) {
       const sauce = new Sauce({
         ...sauceObject,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -38,7 +38,7 @@ exports.getOneSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
-  var regex = /[A-Za-z0-9](([\-|\s|\\']?[a-zA-Z0-9]+)*)/;
+  var regex = /^[^<>@&"()!_$*€£`+=\/;?#]+$/;
   const sauceObject = req.file ?
   {
     ...JSON.parse(req.body.sauce),
