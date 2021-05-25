@@ -1,9 +1,17 @@
-# BriceTchijouk_6_01042021
+## Piquante
 
-This is the code of the web app for Project 6 of the Junior Web Developer path.
+Le projet front a été généré avec [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2.
 
-Prerequisites
-You will need to have Node and npm installed locally on your machine.
+Pour faire fonctionner le projet, vous devez installer node-sass à part.
+
+## Development server
+
+Démarrer `ng serve` depuis le dossier "frontend" pour avoir accès au serveur de développement. Rendez-vous sur `http://localhost:4200/`. L'application va se recharger automatiquement si vous modifiez un fichier source.
+
+## Backend server
+
+Prérequis
+Vous devez avoir Node et npm installé sur votre machine.
 
 Installation
-Clone this repo. From within the backend folder, run npm install. You can then run the server with node server.
+Clonez ce repo. Depuis le dossier "backend", run npm install. Vous pourrez ensuite lancer le serveur avec "node server".
